@@ -1,0 +1,9 @@
+build/
+*.ko
+*.o
+*.cmd
+*.mod
+*.symvers
+*.log
+*.img
+*.tar.bz2
