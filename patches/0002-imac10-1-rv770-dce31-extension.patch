@@ -1,0 +1,24 @@
+diff --git a/drivers/gpu/drm/radeon/atombios_crtc.c b/drivers/gpu/drm/radeon/atombios_crtc.c
+--- a/drivers/gpu/drm/radeon/atombios_crtc.c
++++ b/drivers/gpu/drm/radeon/atombios_crtc.c
+@@ -596,7 +596,7 @@
+ 		if (((rdev->family == CHIP_RS780) || (rdev->family == CHIP_RS880))
+ 		    && !radeon_crtc->ss_enabled)
+ 			radeon_crtc->pll_flags |= RADEON_PLL_USE_FRAC_FB_DIV;
+-		if ((ASIC_IS_DCE32(rdev) || dmi_match(DMI_PRODUCT_NAME, "iMac11,1"))
++		if ((ASIC_IS_DCE32(rdev) || dmi_match(DMI_PRODUCT_NAME, "iMac10,1"))
+ 		    && mode->clock > 165000)
+ 			radeon_crtc->pll_flags |= RADEON_PLL_USE_FRAC_FB_DIV;
+ 	} else {
+diff --git a/drivers/gpu/drm/radeon/atombios_encoders.c b/drivers/gpu/drm/radeon/atombios_encoders.c
+--- a/drivers/gpu/drm/radeon/atombios_encoders.c
++++ b/drivers/gpu/drm/radeon/atombios_encoders.c
+@@ -1707,7 +1707,7 @@
+ 		if (ENCODER_MODE_IS_DP(atombios_get_encoder_mode(encoder)) && connector) {
+ 			/* DP_SET_POWER_D0 is set in radeon_dp_link_train */
+ 			radeon_dp_link_train(encoder, connector);
+-			if (ASIC_IS_DCE4(rdev) || dmi_match(DMI_PRODUCT_NAME, "iMac11,1"))
++			if (ASIC_IS_DCE4(rdev) || dmi_match(DMI_PRODUCT_NAME, "iMac10,1"))
+ 				atombios_dig_encoder_setup(encoder, ATOM_ENCODER_CMD_DP_VIDEO_ON, 0);
+ 		}
+ 		if (radeon_encoder->devices & (ATOM_DEVICE_LCD_SUPPORT)) {
