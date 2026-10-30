@@ -43,7 +43,7 @@ Keep a bootable Linux USB and a working fallback kernel available. The recipe ta
 
 ```bash
 sudo apt update
-sudo apt install -y build-essential patch curl kmod linux-source-6.8.0 linux-headers-6.8.0-147-generic
+sudo apt install -y git build-essential patch curl kmod linux-source-6.8.0 linux-headers-6.8.0-147-generic
 git clone https://github.com/dxchild/imac10-1-radeon-hd4850-linux-fix.git
 cd imac10-1-radeon-hd4850-linux-fix
 bash scripts/build-radeon.sh
