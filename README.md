@@ -23,7 +23,7 @@ The original Radeon `scripts/` and `patches/` paths are intentionally retained s
 
 ### 2. iMac Fan Control Suite — thermal monitoring and three-fan cooling
 
-**Working concept and dashboard on the owner's SSD-modified iMac10,1; GitHub sources are presently reconstructed reference files.**
+**Working dashboard and cooling daemon on the owner's SSD-modified iMac10,1; the four script files were exported from the working machine and synchronized byte-for-byte on 2026-11-07.**
 
 The optical-drive (ODD) thermal-probe arrangement was relocated toward/on the SSD during the storage conversion. On the reference Linux system the ODD temperature reading was unavailable or invalid. The suite attempts to keep useful ODD fan cooling through *real* GPU, chipset and power-supply sensors rather than forcing a dangerously quiet fixed speed.
 
@@ -36,7 +36,7 @@ The optical-drive (ODD) thermal-probe arrangement was relocated toward/on the SS
 
 CPU and HDD fans retain firmware automatic control; optional boosts may only **increase** the minimum RPM. `0%` means no *additional* boost above the existing ODD thermal policy and factory HDD/CPU automatic behavior.
 
-**Safety notice:** published suite code has not been synchronized byte-for-byte with the running iMac's most recent working files. **Do not install the reference daemon blindly or run alongside an existing fan-writing service.** Confirm fan labels/limits on your own machine and test with recovery options ready.
+**Safety notice:** the scripts are exact exports from one modified iMac, but hardware-specific assumptions remain. **Do not install the daemon blindly or run alongside an existing fan-writing service.** Verify fan labels/limits and keep a recovery path. The systemd unit and desktop launcher templates have not been exported from the machine.
 
 ## More documentation
 
@@ -46,8 +46,8 @@ CPU and HDD fans retain firmware automatic control; optional boosts may only **i
 
 ## Roadmap
 
-- [ ] Verify/export the exact latest running fan daemon and GUI from the iMac; diff with reconstructed GitHub sources
-- [ ] Test on a second independently inspected iMac10,1
+- [x] Export the four working scripts from the iMac and verify byte-for-byte Git blob checksums (2026-11-07)
+- [ ] Review/sanitize hardware-specific paths and test on a second independently inspected iMac10,1
 - [ ] Publish hardware-specific setup and screenshot examples
 - [ ] Consolidate GPU/SSD/power management notes and performance benchmarks
 
