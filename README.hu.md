@@ -26,7 +26,7 @@ A Suite részei: Python háttérprogram, sötét macOS-hangulatú grafikus főab
 
 [Részletes magyar leírás](fan-control-suite/README.hu.md) · [Angol dokumentáció](fan-control-suite/README.md)
 
-**Figyelem:** a GitHubra feltöltött Fan Suite forrásai a munkafolyamat alapján rekonstruált változatok; a valódi iMacen jelenleg futó fájlokkal még nem hasonlítottuk össze őket pontosan. Másik gépre vagy a működő hűtés helyére ellenőrzés nélkül telepíteni nem szabad.
+**Figyelem:** a négy Fan Suite-szkriptet 2026. november 7-én az iMacről exportált ZIP alapján, pontos Git blob-ellenőrzéssel szinkronizáltuk. Ettől még gépspecifikusak: másik iMacre ellenőrzés nélkül nem telepíthetők. A systemd és autostart fájlok továbbra is dokumentációs minták.
 
 ## Dokumentáció
 
@@ -36,8 +36,8 @@ A Suite részei: Python háttérprogram, sötét macOS-hangulatú grafikus főab
 
 ## Fejlesztési terv
 
-- [ ] A tesztgépen éppen futó háttérprogram és grafikus fájlok pontos feltöltése / összehasonlítása
-- [ ] Ellenőrzés másik iMac10,1 hardveren
+- [x] A tesztgépről exportált négy szkript pontos feltöltése és ellenőrzése (2026-11-07)
+- [ ] Hardverspecifikus útvonalak felülvizsgálata és ellenőrzés másik iMac10,1 gépen
 - [ ] Grafikus képernyőképek és biztonságos telepítési példák
 - [ ] SSD-, fogyasztás- és teljesítményoptimalizálási dokumentáció
 
