@@ -1,104 +1,143 @@
-#!/usr/bin/env python3
-"""iMac top-panel temperature status indicator (non-privileged)."""
+#!/usr/bin/python3
 from pathlib import Path
 import subprocess
-import sys
 import gi
 
-gi.require_version("Gtk", "3.0")
-try:
-    gi.require_version("AyatanaAppIndicator3", "0.1")
-    from gi.repository import AyatanaAppIndicator3 as AppIndicator
-except (ValueError, ImportError):
-    gi.require_version("AppIndicator3", "0.1")
-    from gi.repository import AppIndicator3 as AppIndicator
-from gi.repository import GLib, Gtk
+gi.require_version('Gtk', '3.0')
+gi.require_version('AyatanaAppIndicator3', '0.1')
 
-BASE = next(iter(Path("/sys/devices/platform").glob("applesmc.*")), None)
+from gi.repository import Gtk, GLib
+from gi.repository import AyatanaAppIndicator3 as Indicator
 
-def sample():
-    vals = {}
-    if BASE is None:
-        return vals
-    for label in BASE.glob("temp*_label"):
+SMC = next(
+    iter(Path('/sys/devices/platform').glob('applesmc.*')),
+    None
+)
+
+def read_temps():
+    result = {}
+    if SMC is None:
+        return result
+
+    for p in SMC.glob('temp*_label'):
         try:
-            code = label.read_text().strip()
-            p = label.with_name(label.name.replace("_label", "_input"))
-            value = float(p.read_text()) / 1000
-            if 15 <= value <= 110:
-                vals[code] = value
-        except (OSError, ValueError):
+            name = p.read_text().strip()
+            inp = p.with_name(
+                p.name.replace('_label', '_input')
+            )
+            temp = float(inp.read_text()) / 1000
+
+            if 15 <= temp <= 110:
+                result[name] = temp
+        except (ValueError, OSError):
             pass
-    return vals
 
-def maximum(vals, keys):
-    found = [vals[x] for x in keys if x in vals]
-    return max(found) if found else None
+    return result
 
-def rpm(n):
+def rpm(index):
+    if SMC is None:
+        return 'N/A'
     try:
-        return f"{int((BASE / f'fan{n}_input').read_text())} RPM"
-    except (OSError, ValueError, TypeError):
-        return "N/A"
-
-class Monitor:
-    def __init__(self):
-        self.indicator = AppIndicator.Indicator.new(
-            "imac-fan-control",
-            "utilities-system-monitor",
-            AppIndicator.IndicatorCategory.HARDWARE
+        value = int(
+            (SMC / f'fan{index}_input').read_text()
         )
-        self.indicator.set_status(AppIndicator.IndicatorStatus.ACTIVE)
-        self.indicator.set_title("iMac Fan Control")
-        menu = Gtk.Menu()
+        return f'{value} RPM'
+    except (ValueError, OSError):
+        return 'N/A'
+
+def show_temp(value):
+    return f'{value:.1f} °C' if value is not None else 'N/A'
+
+def hottest(data, codes):
+    values = [data[k] for k in codes if k in data]
+    return max(values) if values else None
+
+class PanelMonitor:
+    def __init__(self):
+        self.ind = Indicator.Indicator.new(
+            'imac-temperature-monitor',
+            'utilities-system-monitor',
+            Indicator.IndicatorCategory.HARDWARE
+        )
+
+        self.menu = Gtk.Menu()
         self.items = {}
-        for key in ("GPU","Chipset","PSU","CPU heatsink","ODD","HDD","CPU fan"):
-            row = Gtk.MenuItem(label="Reading...")
-            row.set_sensitive(False)
-            menu.append(row)
-            self.items[key] = row
-        menu.append(Gtk.SeparatorMenuItem())
-        launch = Gtk.MenuItem(label="Open iMac Fan Control")
-        launch.connect("activate", self.open_main)
-        menu.append(launch)
-        quit_item = Gtk.MenuItem(label="Quit temperature indicator")
-        quit_item.connect("activate", lambda *_: Gtk.main_quit())
-        menu.append(quit_item)
-        menu.show_all()
-        self.indicator.set_menu(menu)
+
+        for key in (
+            'gpu', 'chipset', 'psu', 'cpu',
+            'odd', 'hdd', 'cpu_fan'
+        ):
+            item = Gtk.MenuItem(label='Betöltés...')
+            item.set_sensitive(False)
+            self.items[key] = item
+            self.menu.append(item)
+
+        self.menu.append(Gtk.SeparatorMenuItem())
+
+        gui = Path.home() / '.local/bin/imac-fan-control.py'
+
+        if gui.is_file():
+            entry = Gtk.MenuItem(
+                label='Fan Control megnyitása'
+            )
+            entry.connect(
+                'activate',
+                lambda *_: subprocess.Popen(
+                    ['/usr/bin/python3', str(gui)]
+                )
+            )
+            self.menu.append(entry)
+
+        exit_item = Gtk.MenuItem(
+            label='Panelkijelző bezárása'
+        )
+        exit_item.connect(
+            'activate',
+            lambda *_: Gtk.main_quit()
+        )
+        self.menu.append(exit_item)
+
+        self.menu.show_all()
+        self.ind.set_menu(self.menu)
+        self.ind.set_status(
+            Indicator.IndicatorStatus.ACTIVE
+        )
+
         self.refresh()
         GLib.timeout_add_seconds(5, self.refresh)
 
-    def open_main(self, *_):
-        # Launcher is responsible for avoiding duplicate windows.
-        launcher = Path.home() / ".local/bin/imac-fan-suite.sh"
-        if launcher.exists():
-            subprocess.Popen(["/bin/bash",str(launcher)],
-                             stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-        else:
-            subprocess.Popen(["/usr/bin/python3",
-                str(Path.home()/".local/bin/imac-fan-control.py")])
-
     def refresh(self):
-        vals = sample()
-        gpu = maximum(vals, ("TG0D","TG0H","TG0P"))
-        if gpu is not None:
-            self.indicator.set_label(f"GPU {gpu:.0f}°C","GPU 888°C")
-        else:
-            self.indicator.set_label("GPU N/A","GPU 888°C")
-        entries = {
-            "GPU": gpu,
-            "Chipset": vals.get("TN0H"),
-            "PSU": vals.get("Tp2H"),
-            "CPU heatsink": vals.get("TC0H"),
+        t = read_temps()
+
+        gpu = hottest(
+            t, ('TG0D', 'TG0H', 'TG0P')
+        )
+        chipset = t.get('TN0H')
+        psu = t.get('Tp2H')
+        cpu = t.get('TC0H')
+
+        label = (
+            f'GPU {gpu:.0f}°C'
+            if gpu is not None else 'GPU N/A'
+        )
+
+        self.ind.set_label(label, 'GPU 888°C')
+
+        data = {
+            'gpu': f'GPU: {show_temp(gpu)}',
+            'chipset': f'Chipset: {show_temp(chipset)}',
+            'psu': f'Tápegység: {show_temp(psu)}',
+            'cpu': f'CPU hűtőborda: {show_temp(cpu)}',
+            'odd': f'ODD ventilátor: {rpm(1)}',
+            'hdd': f'HDD ventilátor: {rpm(2)}',
+            'cpu_fan': f'CPU ventilátor: {rpm(3)}'
         }
-        for key,value in entries.items():
-            self.items[key].set_label(
-                f"{key}: {value:.1f} °C" if value is not None else f"{key}: N/A")
-        for name,n in (("ODD",1),("HDD",2),("CPU fan",3)):
-            self.items[name].set_label(f"{name}: {rpm(n)}")
+
+        for key, value in data.items():
+            self.items[key].set_label(value)
+
         return True
 
-if __name__ == "__main__":
-    Monitor()
+if __name__ == '__main__':
+    PanelMonitor()
     Gtk.main()
