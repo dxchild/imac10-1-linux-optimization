@@ -35,7 +35,7 @@ The machine's working dashboard uses a macOS-inspired dark layout and upward-onl
 - **0% sliders:** no additional acceleration over the ODD thermal baseline or factory HDD/CPU behavior. Higher percentages impose only more cooling.
 - **Charts:** visualize the requested RPM *floor* or modeled ODD target; the firmware's actual HDD/CPU RPM may be higher than the requested minimum.
 
-On the tested iMac the fan order was **1=ODD, 2=HDD, 3=CPU**, with reported SMC minimums **900, 1100 and 940 RPM**. **These numbers are examples from one machine, not safe universal defaults.** The reference daemon includes a fan-label check; still verify all names and limits before any writes.
+On the tested iMac the fan order was **1=ODD, 2=HDD, 3=CPU**, with reported SMC minimums **900, 1100 and 940 RPM**. **These numbers are examples from one machine, not safe universal defaults.** The exact exported daemon does **not** validate fan labels at runtime; verify every label and RPM limit manually before installing on another machine.
 
 ## Safe inspection before attempting a port
 
