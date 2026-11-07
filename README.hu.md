@@ -1,44 +1,46 @@
-# Magyar útmutató — iMac10,1 Radeon HD 4850 Linux javítás
+# iMac10,1 (2009) – Linux Optimization Project
 
-**Kísérleti, egyetlen valódi gépen kipróbált javítás** a 2009-es, 27 hüvelykes Apple iMac (DMI: `iMac10,1`), Radeon HD 4850 / RV770 és 2560×1440-es belső kijelző kombinációjához.
+**Egy 2009-es Apple iMac felújítása és optimalizálása Ubuntu MATE alatt: működő Radeon grafika, SSD-átalakítás és intelligens hűtés.**
 
-**Tesztelt rendszer:** Ubuntu MATE 24.04 LTS, `6.8.0-147-generic` kernel.
+[English](README.md) · [Hardver](docs/hardware.md) · [Hűtésbiztonság](docs/thermal-safety.md)
 
-## Mi volt a hiba?
+> Közösségi projekt, **egyetlen konkrét iMac10,1 gépen szerzett tapasztalatokkal**. Nem hivatalos Apple-, Ubuntu- vagy Linux-fejlesztői kiadás.
 
-Az eredeti Radeon-meghajtó normál KMS-indításkor fekete képernyőt adott. A `nomodeset` kapcsolóval volt kép, de csak `llvmpipe` szoftveres megjelenítéssel. A [hivatalos Linux-javítás](https://github.com/torvalds/linux/commit/275c3332585bbabcefad109a6978cc0cbecf2008) önmagában mozgó képcsíkokat eredményezett. Két további, kizárólag az `iMac10,1` modellre célzott forráskód-módosítás után a tesztgépen **stabil kép és Radeon hardveres gyorsítás** működött.
+## A projekt két működési területe
 
-A működő gépen a `glxinfo -B` eredménye: **AMD RV770, Accelerated: yes, 512 MB videomemória, OpenGL 3.3**. A `vainfo` H.264/VC-1/MPEG-2 dekódolási profilokat hirdetett (ez nem bizonyítja önmagában a lejátszók tényleges hardveres dekódolását). A `nomodeset` többé nem volt szükséges.
+### Radeon HD 4850 / RV770 optimalizálás
 
-## Mit tartalmaz a javítás?
+A 2009-es, 27 hüvelykes, 2560×1440-es kijelzőjű iMac10,1 gépen a normál Linux Radeon indítás fekete képernyőt adott. A `nomodeset` csak szoftveres megjelenítést engedett. Egy eredeti Linux-javítás és két célzott módosítás együtt működő, gyorsított Radeon-megjelenítést eredményezett Ubuntu MATE 24.04 alatt, a `6.8.0-147-generic` kernellel.
 
-Az eredeti Linux-javítás szerzője Gilles Risch; a módosítást Alex Deucher is aláírta. Az itt található **második patch** az eredeti módosítás utáni két `iMac11,1`-ellenőrzést `iMac10,1`-re cseréli:
+[Részletes magyar útmutató](radeon-hd4850/README.hu.md) · [Angol technikai leírás](radeon-hd4850/README.md)
 
-1. `atombios_crtc.c`: speciális pixelórajel / PLL beállítás.
-2. `atombios_encoders.c`: belső DisplayPort-videó engedélyezése.
+A korábbi `scripts/` és `patches/` útvonalakat megtartottuk a régi hivatkozások és parancsok kompatibilitásáért.
 
-**Figyelem:** ez célzott, nem általános kerneljavítás. A második patch *lecseréli* az iMac11,1-re vonatkozó ellenőrzést; más típusra nem javasolt változtatás nélkül. A hőérzékelő- és ventilátorhibákat nem javítja.
+### iMac Fan Control Suite
 
-## Elkészítés
+A háttértár SSD-re cserélésekor az ODD (optikai meghajtó) hőérzékelőjének elhelyezése megváltozott: az érzékelőt / az érzékelő végét az SSD-hez helyeztük át. Ezen a tesztgépen a Linux által látott ODD-hőmérsékleti csatorna hibásnak vagy hiányzónak bizonyult.
 
-Az alábbi parancsokhoz internet, a pontos 6.8-as kernelhez tartozó fejlécek és működő tartalék indítás szükséges:
+A megoldás a GPU, a chipset és a tápegység hőmérséklete alapján szabályozza az ODD ventilátort, miközben a HDD és CPU ventilátor automatikus Apple SMC-üzemmódját megtartja. Az opcionális csúszkák csak **felfelé** módosíthatják a hűtési igényt, 0%-nál nincs hozzáadott gyorsítás.
 
-```bash
-sudo apt update
-sudo apt install -y git build-essential patch curl kmod linux-source-6.8.0 linux-headers-6.8.0-147-generic
-git clone https://github.com/dxchild/imac10-1-radeon-hd4850-linux-fix.git
-cd imac10-1-radeon-hd4850-linux-fix
-bash scripts/build-radeon.sh
-```
+A Suite részei: Python háttérprogram, sötét macOS-hangulatú grafikus főablak, felső MATE-paneles hőmérsékletkijelző, közös indító és automatikus indítás mintafájljai.
 
-A szkript **csak a Radeon modult fordítja le**, nem telepíti, és nem módosítja a rendszerindítást.
+[Részletes magyar leírás](fan-control-suite/README.hu.md) · [Angol dokumentáció](fan-control-suite/README.md)
 
-A teljes telepítési, ellenőrzési és **visszaállítási** parancssorokat lásd az angol [README.md](README.md) dokumentumban. Ezeket olvasd végig, mielőtt bármilyen `radeon.ko` fájlt telepítesz.
+**Figyelem:** a GitHubra feltöltött Fan Suite forrásai a munkafolyamat alapján rekonstruált változatok; a valódi iMacen jelenleg futó fájlokkal még nem hasonlítottuk össze őket pontosan. Másik gépre vagy a működő hűtés helyére ellenőrzés nélkül telepíteni nem szabad.
 
-## Biztonság és hibajelentés
+## Dokumentáció
 
-Tarts meg egy működő kernelt és egy indítható Linux-pendrive-ot! Először csak **egyetlen indításra** távolítsd el a GRUB `nomodeset` kapcsolóját. Képhiba esetén indíts vissza `nomodeset` móddal. Az egyedi kernelmodul a frissített kernellel nem feltétlenül kompatibilis.
+- [A tesztgép hardveradatai](docs/hardware.md)
+- [SSD-csere és ODD-érzékelő](docs/ssd-upgrade.md)
+- [Hővédelmi szabályok és visszaállítás](docs/thermal-safety.md)
 
-Más gépen elért eredményt az Issues részben lehet megosztani — típussal, kernelverzióval és `glxinfo -B` kimenettel. Személyes adatokat, sorozatszámokat és jelszavakat ne tölts fel.
+## Fejlesztési terv
 
-**Licenc:** GPL-2.0-only; az eredeti Linux-fejlesztők szerzősége és jogai változatlanok.
+- [ ] A tesztgépen éppen futó háttérprogram és grafikus fájlok pontos feltöltése / összehasonlítása
+- [ ] Ellenőrzés másik iMac10,1 hardveren
+- [ ] Grafikus képernyőképek és biztonságos telepítési példák
+- [ ] SSD-, fogyasztás- és teljesítményoptimalizálási dokumentáció
+
+**Licenc:** [GPL-2.0-only](LICENSE), az eredeti Linux-fejlesztők szerzőségének megtartásával. A WhiteSur téma, Apple-eredetű fájlok és betűkészletek nem részei a projektnek.
+
+**Repository név:** a GitHub-tároló egyelőre a régi `imac10-1-radeon-hd4850-linux-fix` nevet viseli; a tartalma már a tágabb iMac10,1 optimalizálási projekt. A tulajdonos a GitHub Settings felületen átnevezheti.
