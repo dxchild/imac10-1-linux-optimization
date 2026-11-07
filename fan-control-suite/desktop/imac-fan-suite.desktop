@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=iMac Fan Control Suite
+Comment=SMC cooling dashboard and panel temperature indicator
+Exec=/home/imac/.local/bin/imac-fan-suite.sh
+Terminal=false
+OnlyShowIn=MATE;
+X-MATE-Autostart-enabled=true
