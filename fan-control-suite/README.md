@@ -2,7 +2,7 @@
 
 [Magyar dokumentáció / Hungarian guide](README.hu.md)
 
-> **Experimental, machine-specific project.** Developed for one late-2009 iMac reporting DMI `iMac10,1` with Ubuntu MATE 24.04. **The Python sources in this repository are reconstructed from the working setup and conversation; they are NOT yet a byte-for-byte export of the files running on the owner's iMac.** Treat the code and unit files as a reference for review and testing, **not a ready-to-run unattended installer**.
+> **Experimental, machine-specific project.** Developed for one late-2009 iMac reporting DMI `iMac10,1` with Ubuntu MATE 24.04. **The four scripts in `scripts/` are byte-for-byte synchronized from the owner's working iMac ZIP export dated 2026-11-07.** The systemd unit and desktop autostart entries remain templates, not exported system files. The code contains hardware-specific paths and assumptions; **it is not a universal unattended installer**.
 
 ## Why it exists
 
@@ -23,7 +23,7 @@ A missing temperature sensor can make the Apple SMC / ODD fan behave unexpectedl
 | systemd example | [`systemd/imac-odd-fan.service`](systemd/imac-odd-fan.service) | Cooling daemon at system start (independent of login) |
 | desktop example | [`desktop/imac-fan-suite.desktop`](desktop/imac-fan-suite.desktop) | GUI components at MATE login |
 
-The machine's working dashboard uses a macOS-inspired dark layout and upward-only fan response controls. The panel display and main window are separate processes; the cooling service stays running when both are closed.
+The machine's working dashboard uses a macOS-inspired dark layout and upward-only fan response controls. The panel indicator's dropdown still contains some Hungarian labels in this exact export. The panel display and main window are separate processes; the cooling service stays running when both are closed.
 
 ## Thermal model
 
@@ -65,7 +65,7 @@ For the look shown in the screenshots, the Inter font and WhiteSur dark desktop 
 5. Only after repeated safe tests enable the systemd service. Set the `IMAC_FAN_CURVES` environment variable to the GUI configuration file if using user-specific sliders.
 6. Install GUI and panel Python files under `~/.local/bin/` and use the MATE launcher/autostart template; remove old duplicate autostarts.
 
-The GUI configuration file is `~/.config/imac-fan-curves.json` with keys `ODD`, `HDD`, `CPU` and values 0–100.
+The GUI configuration file is `~/.config/imac-fan-curves.json` with keys `ODD`, `HDD`, `CPU` and values 0–100. **The exported daemon currently hard-codes `/home/imac/.config/imac-fan-curves.json`; adapt it deliberately and verify file permissions when using a different username.**
 
 ### Emergency rollback
 
@@ -79,6 +79,6 @@ On the owner's machine, the Radeon HD 4850 internal-display workaround is docume
 
 ## Status
 
-**Community reference / experimental.** The owner reports a functioning desktop and fan controls on the target iMac. The published files are a reconstruction; exact on-device source synchronization and code review are still pending.
+**Exact source snapshot / experimental outside the reference iMac.** The owner reports a functioning cooling daemon and desktop UI. The four uploaded scripts were verified against the exported ZIP using Git blob hashes; the actual systemd unit and boot configuration were not included in that export. Independent hardware validation and further code review are still pending.
 
 Licensed under [GPL-2.0-only](../LICENSE); third-party icons, fonts, and themes are **not included**.
