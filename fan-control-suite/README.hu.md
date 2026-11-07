@@ -2,7 +2,7 @@
 
 [English documentation](README.md)
 
-> **Kísérleti, egy konkrét gépre készített megoldás.** A GitHubra feltöltött Python-fájlokat a működő rendszer kialakításának lépései alapján rekonstruáltuk, de a tulajdonos iMacén éppen futó fájlokkal **még nem vetettük össze bájtról bájtra**. Ezért a repository jelenleg tanulmányozási és tesztelési kiindulási alap, nem univerzális, automatikus telepítő.
+> **Kísérleti, egy konkrét gépre készített megoldás.** A `scripts/` mappában lévő négy fájlt **2026. november 7-én a működő iMacről exportált ZIP-ből, ellenőrzőösszeggel egyezően feltöltöttük**. A systemd és az automatikus indulás fájljai viszont dokumentációs minták. A forrás gépspecifikus, nem univerzális automatikus telepítő.
 
 ## Miért készült?
 
@@ -61,12 +61,12 @@ Ubuntu MATE grafikus függőségek:
 sudo apt install python3 python3-tk python3-gi gir1.2-gtk-3.0 gir1.2-ayatanaappindicator3-0.1
 ```
 
-A felső panelhez Indicator Applet Complete vagy azzal kompatibilis kisalkalmazás szükséges.
+A felső panelhez Indicator Applet Complete vagy azzal kompatibilis kisalkalmazás szükséges. Az exportált indikátor lenyíló menüjében néhány felirat továbbra is magyar. **A háttérprogramban a konfiguráció útvonala `/home/imac/.config/imac-fan-curves.json`**, ezért másik felhasználónál ezt ellenőrizni és módosítani kell.
 
 **Biztonsági telepítési és visszaállítási részletek:** [angol README](README.md) és [Thermal safety](../docs/thermal-safety.md).
 
 ## Állapot, licenc
 
-Az eredeti gépen a hűtés és a grafikus felület működik, de a GitHub-forrás **még rekonstruált referencia**, a gépen futó pontos állapot feltöltése és a szélesebb körű tesztelés hátravan.
+Az eredeti gépen a hűtés és a grafikus felület működik; a négy szkript most már **az iMacről exportált pontos verzió**. Más gépeken a tesztelés, valamint a hardverkiosztás és a rendszerindító szolgáltatás külön ellenőrzése továbbra is szükséges.
 
 [GPL-2.0-only](../LICENSE). A WhiteSur téma és az Inter betűtípus nem része a repositorynak.
