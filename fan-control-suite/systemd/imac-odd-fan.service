@@ -1,0 +1,17 @@
+[Unit]
+Description=iMac10,1 Apple SMC fan control (ODD + HDD/CPU boost)
+After=multi-user.target
+ConditionPathExistsGlob=/sys/devices/platform/applesmc.*
+
+[Service]
+Type=simple
+# Replace the example username with your actual Linux login.
+# A default without this variable reads /etc/imac-fan-control/curves.json.
+Environment=IMAC_FAN_CURVES=/home/imac/.config/imac-fan-curves.json
+ExecStart=/usr/bin/python3 /usr/local/sbin/imac-odd-fan.py
+Restart=always
+RestartSec=3
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target
