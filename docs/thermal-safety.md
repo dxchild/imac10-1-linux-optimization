@@ -42,4 +42,4 @@ If you suspect overheating, immediately stop the risky test and restore the veri
 
 ## Published source status
 
-The source currently in this repository is a *reconstruction* based on development in chat, not an exact export from the running test machine. Do not automatically replace a working installed service with it. Only compare and deploy after manual review.
+As of 2026-11-07, the four `fan-control-suite/scripts/` files are an exact export from the owner's working iMac ZIP archive (Git blob checksums verified). The systemd unit and desktop autostart templates were not part of the export. This does **not** certify the daemon for other hardware: it relies on fixed iMac10,1 fan mappings, 1100/940 RPM HDD/CPU floors and `/home/imac` for the curve file. Do not automatically replace a working installed service or run two fan-writing programs. Review and test before any deployment.
