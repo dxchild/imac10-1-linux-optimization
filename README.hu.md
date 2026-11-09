@@ -6,7 +6,7 @@
 
 > Közösségi projekt, **egyetlen konkrét iMac10,1 gépen szerzett tapasztalatokkal**. Nem hivatalos Apple-, Ubuntu- vagy Linux-fejlesztői kiadás.
 
-## A projekt két működési területe
+## A projekt fő területei
 
 ### Radeon HD 4850 / RV770 optimalizálás
 
@@ -28,6 +28,14 @@ A Suite részei: Python háttérprogram, sötét macOS-hangulatú grafikus főab
 
 **Figyelem:** a négy Fan Suite-szkriptet 2026. november 7-én az iMacről exportált ZIP alapján, pontos Git blob-ellenőrzéssel szinkronizáltuk. Ettől még gépspecifikusak: másik iMacre ellenőrzés nélkül nem telepíthetők. A systemd és autostart fájlok továbbra is dokumentációs minták.
 
+### Bluetooth és Apple Wireless Keyboard
+
+A gyári Apple Bluetooth 2.0 + EDR adapter működik az iMac10,1 alatt. Az Ubuntu MATE 24.04 gyári Blueman **2.3.5** programja rendszeresen összeomlott, ezért Debian-forrásból elkészült és felkerült a **Blueman 2.4.3-1**. Az Apple Bluetooth-billentyűzetet sikerült párosítani. Egy betűk helyett számokat adó, valószínűleg Num Lockhoz kapcsolódó jelenséget is vizsgáltunk.
+
+[Bluetooth és Apple-billentyűzet javítás – magyar útmutató](docs/bluetooth-apple-keyboard.hu.md) · [English guide](docs/bluetooth-apple-keyboard.md)
+
+**Állapot:** telepített verzió és párosítás igazolva; az összeomlás tartós megszűnését és a Num Lock megoldását újraindítás után még ellenőrizni kell.
+
 ## Dokumentáció
 
 - [A tesztgép hardveradatai](docs/hardware.md)
@@ -43,4 +51,4 @@ A Suite részei: Python háttérprogram, sötét macOS-hangulatú grafikus főab
 
 **Licenc:** [GPL-2.0-only](LICENSE), az eredeti Linux-fejlesztők szerzőségének megtartásával. A WhiteSur téma, Apple-eredetű fájlok és betűkészletek nem részei a projektnek.
 
-**Repository név:** a GitHub-tároló egyelőre a régi `imac10-1-radeon-hd4850-linux-fix` nevet viseli; a tartalma már a tágabb iMac10,1 optimalizálási projekt. A tulajdonos a GitHub Settings felületen átnevezheti.
+**Repository:** [`dxchild/imac10-1-linux-optimization`](https://github.com/dxchild/imac10-1-linux-optimization). A korábbi Radeon-specifikus elnevezésről már át lett nevezve.
