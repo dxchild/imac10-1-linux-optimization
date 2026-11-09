@@ -1,6 +1,6 @@
 # iMac10,1 (2009) — Linux Optimization Project
 
-**Restore graphics, monitor thermals, and optimize cooling on a late-2009 Apple iMac running Linux.**
+**Restore graphics, optimize cooling, and document Bluetooth compatibility on a late-2009 Apple iMac running Linux.**
 
 [Magyar leírás](README.hu.md) · [Hardware](docs/hardware.md) · [Thermal safety](docs/thermal-safety.md)
 
@@ -38,6 +38,15 @@ CPU and HDD fans retain firmware automatic control; optional boosts may only **i
 
 **Safety notice:** the scripts are exact exports from one modified iMac, but hardware-specific assumptions remain. **Do not install the daemon blindly or run alongside an existing fan-writing service.** Verify fan labels/limits and keep a recovery path. The systemd unit and desktop launcher templates have not been exported from the machine.
 
+### 3. Bluetooth & Apple Wireless Keyboard — Blueman 2.4.3 case study
+
+**Observed on the same iMac10,1 with its original Apple Bluetooth 2.0 + EDR controller.** The Ubuntu 24.04 Blueman 2.3.5 applet repeatedly crashed; the owner built and installed Blueman **2.4.3-1** and verified the package version. The Apple Bluetooth keyboard paired successfully. An embedded-keypad / Num Lock typing issue was also identified, with long-term fix verification still pending.
+
+- [Bluetooth / Apple Keyboard troubleshooting (English)](docs/bluetooth-apple-keyboard.md)
+- [Magyar útmutató](docs/bluetooth-apple-keyboard.hu.md)
+
+**Status:** pairing and installed version confirmed; repeat-login crash regression and permanent keyboard fix are not yet confirmed.
+
 ## More documentation
 
 - [Test machine and hardware checks](docs/hardware.md)
@@ -55,4 +64,4 @@ CPU and HDD fans retain firmware automatic control; optional boosts may only **i
 
 [GPL-2.0-only](LICENSE) for project code and patches. The Linux kernel patch builds on upstream work by Gilles Risch and Alex Deucher; details and attribution remain in the [Radeon README](radeon-hd4850/README.md). No Apple proprietary files, commercial macOS assets, WhiteSur theme files or font files are distributed.
 
-**Repository naming:** the current GitHub repository retains its older `imac10-1-radeon-hd4850-linux-fix` URL for compatibility. The contents now form the broader *iMac10,1 Linux Optimization Project*. The owner can optionally rename the repository via GitHub Settings; GitHub generally redirects old repository links.
+**Repository:** [`dxchild/imac10-1-linux-optimization`](https://github.com/dxchild/imac10-1-linux-optimization). The repository was renamed from its earlier Radeon-specific name.
